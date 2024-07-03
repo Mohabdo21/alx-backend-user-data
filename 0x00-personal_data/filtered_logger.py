@@ -3,7 +3,7 @@
 Module for filtering Personally Identifiable Information (PII) in logs.
 """
 import logging
-import os
+from os import environ
 import re
 from typing import List
 
@@ -101,10 +101,10 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         Union[MySQLConnection, MySQLConnectionAbstract]: Database connection
         object.
     """
-    db_username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
-    db_password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
-    db_host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
-    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+    db_username = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
+    db_password = environ.get("PERSONAL_DATA_DB_PASSWORD", "")
+    db_host = environ.get("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = environ.get("PERSONAL_DATA_DB_NAME")
 
     connection = mysql.connector.connection.MySQLConnection(
         user=db_username, password=db_password, host=db_host, database=db_name
