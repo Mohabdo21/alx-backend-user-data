@@ -12,7 +12,7 @@ from mysql.connector.abstracts import MySQLConnectionAbstract
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursorDict
 
-PII_FIELDS = ["name", "email", "phone", "ssn", "password"]
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(
@@ -32,7 +32,7 @@ def filter_datum(
     """
     for field in fields:
         message = re.sub(
-            f"{field}=.*?{separator}",
+            f"{field}=.+?{separator}",
             f"{field}={redaction}{separator}",
             message
         )
@@ -88,7 +88,7 @@ def get_logger() -> logging.Logger:
     logger.propagate = False
 
     stream_handler = logging.StreamHandler()
-    formatter = RedactingFormatter(PII_FIELDS)
+    formatter = RedactingFormatter(list(PII_FIELDS))
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
