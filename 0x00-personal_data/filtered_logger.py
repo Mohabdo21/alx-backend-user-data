@@ -4,15 +4,11 @@ Module for filtering Personally Identifiable Information (PII) in logs.
 """
 import logging
 import re
-import subprocess
 from os import environ
 from typing import List
 
 import mysql.connector
 from mysql.connector.cursor import MySQLCursorDict
-
-subprocess.run(["pip3", "install", "--upgrade", "mysql-connector-python"],
-               check=True)
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
