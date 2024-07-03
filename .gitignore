@@ -1,0 +1,16 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+
+# Log files
+*.log
+
+# Main files
+*-main.py
+main.py
+
+# pytest files
+.pytest_cache/
+
+# venv
+venv/
