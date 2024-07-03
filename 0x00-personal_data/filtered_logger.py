@@ -101,13 +101,11 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     Returns:
         Database connection object.
     """
-    db_username = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
-    db_password = environ.get("PERSONAL_DATA_DB_PASSWORD", "")
-    db_host = environ.get("PERSONAL_DATA_DB_HOST", "localhost")
-    db_name = environ.get("PERSONAL_DATA_DB_NAME")
-
     connection = mysql.connector.connection.MySQLConnection(
-        user=db_username, password=db_password, host=db_host, database=db_name
+        user=environ.get("PERSONAL_DATA_DB_USERNAME", "root"),
+        password=environ.get("PERSONAL_DATA_DB_PASSWORD", ""),
+        host=environ.get("PERSONAL_DATA_DB_HOST", "localhost"),
+        database=environ.get("PERSONAL_DATA_DB_NAME")
     )
 
     return connection
