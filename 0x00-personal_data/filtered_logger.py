@@ -4,11 +4,15 @@ Module for filtering Personally Identifiable Information (PII) in logs.
 """
 import logging
 import re
+import subprocess
 from os import environ
 from typing import List
 
 import mysql.connector
-from mysql.connector.cursor import MySQLCursorDict
+
+subprocess.run(["pip3", "install", "--upgrade", "mysql-connector-python"],
+               check=True)
+
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
@@ -115,7 +119,7 @@ def main() -> None:
     in the users table and display each row under a filtered format
     """
     db_connection = get_db()
-    cursor: MySQLCursorDict = db_connection.cursor(dictionary=True)
+    cursor = db_connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users;")
     logger = get_logger()
 
