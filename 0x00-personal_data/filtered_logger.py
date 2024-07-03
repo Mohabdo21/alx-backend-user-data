@@ -5,11 +5,9 @@ Module for filtering Personally Identifiable Information (PII) in logs.
 import logging
 import os
 import re
-from typing import List, Union
+from typing import List
 
 import mysql.connector
-from mysql.connector.abstracts import MySQLConnectionAbstract
-from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursorDict
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -95,7 +93,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> Union[MySQLConnection, MySQLConnectionAbstract]:
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """
     Establishes a connection to the database.
 
