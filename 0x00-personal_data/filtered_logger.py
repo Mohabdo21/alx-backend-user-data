@@ -3,8 +3,8 @@
 Module for filtering Personally Identifiable Information (PII) in logs.
 """
 import logging
-from os import environ
 import re
+from os import environ
 from typing import List
 
 import mysql.connector
@@ -67,8 +67,9 @@ class RedactingFormatter(logging.Formatter):
             str: The formatted log record with obfuscated PII fields.
         """
         original_message = logging.Formatter.format(self, record)
-        filtered_message = filter_datum(self.fields, self.REDACTION,
-                                        original_message, self.SEPARATOR)
+        filtered_message = filter_datum(
+            self.fields, self.REDACTION, original_message, self.SEPARATOR
+        )
         if not filtered_message.endswith(self.SEPARATOR):
             filtered_message += self.SEPARATOR
         return filtered_message
@@ -98,8 +99,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     Establishes a connection to the database.
 
     Returns:
-        Union[MySQLConnection, MySQLConnectionAbstract]: Database connection
-        object.
+        Database connection object.
     """
     db_username = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
     db_password = environ.get("PERSONAL_DATA_DB_PASSWORD", "")
