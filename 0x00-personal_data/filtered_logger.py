@@ -66,13 +66,10 @@ class RedactingFormatter(logging.Formatter):
         Returns:
             str: The formatted log record with obfuscated PII fields.
         """
-        original_message = logging.Formatter.format(self, record)
-        filtered_message = filter_datum(
-            self.fields, self.REDACTION, original_message, self.SEPARATOR
-        )
-        if not filtered_message.endswith(self.SEPARATOR):
-            filtered_message += self.SEPARATOR
-        return filtered_message
+        return filter_datum(
+            self.fields, self.REDACTION,
+            super().format(record), self.SEPARATOR
+        ).rstrip(self.SEPARATOR) + self.SEPARATOR
 
 
 def get_logger() -> logging.Logger:
