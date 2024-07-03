@@ -3,8 +3,8 @@
 Module for filtering Personally Identifiable Information (PII) in logs.
 """
 import logging
+import os
 import re
-from os import environ
 from typing import List
 
 import mysql.connector
@@ -95,21 +95,54 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
-    """
-    Establishes a connection to the database.
+    """Returns a connector to the database
+    (mysql.connector.connection.MySQLConnection object).
+
+    You will connect to a secure holberton database to read a users table.
+    The database is protected by a username and password that are set as
+    environment variables on the server named PERSONAL_DATA_DB_USERNAME,
+    (set the default as “root”), PERSONAL_DATA_DB_PASSWORD (set the default
+    as an empty string) and PERSONAL_DATA_DB_HOST (set the default as
+    “localhost”).
+    The database name is stored in PERSONAL_DATA_DB_NAME.
 
     Returns:
-        Database connection object.
+        mysql.connector.connection.MySQLConnection: Connector to the
+        database.
     """
-    connection = mysql.connector.connection.MySQLConnection(
-        user=environ.get("PERSONAL_DATA_DB_USERNAME", "root"),
-        password=environ.get("PERSONAL_DATA_DB_PASSWORD", ""),
-        host=environ.get("PERSONAL_DATA_DB_HOST", "localhost"),
-        database=environ.get("PERSONAL_DATA_DB_NAME"),
-        port=3306
+    # Get the environment variables for the database credentials
+    db_host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    #  OR db_name = os.environ.get('PERSONAL_DATA_DB_USERNAME', 'root')
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME", "")
+    db_user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    db_pwd = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    # Connect to the database using the obtained credentials
+    connection = mysql.connector.connect(
+        host=db_host,
+        port=3306,
+        user=db_user,
+        password=db_pwd,
+        database=db_name,
     )
-
     return connection
+
+
+# def get_db() -> mysql.connector.connection.MySQLConnection:
+#     """
+#     Establishes a connection to the database.
+
+#     Returns:
+#         Database connection object.
+#     """
+#     connection = mysql.connector.connection.MySQLConnection(
+#         user=environ.get("PERSONAL_DATA_DB_USERNAME", "root"),
+#         password=environ.get("PERSONAL_DATA_DB_PASSWORD", ""),
+#         host=environ.get("PERSONAL_DATA_DB_HOST", "localhost"),
+#         database=environ.get("PERSONAL_DATA_DB_NAME"),
+#         port=3306
+#     )
+
+#     return connection
 
 
 def main() -> None:
