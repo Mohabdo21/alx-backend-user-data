@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
 """
-This module contains functionality for filtering Personally Identifiable
-Information (PII) in logs and connecting to a MySQL database to retrieve
-and log user data.
+Module for filtering Personally Identifiable Information (PII) in logs.
 """
-
 import logging
 import re
-from os import getenv
+from os import environ
 from typing import List
 
 import mysql.connector
+from mysql.connector.cursor import MySQLCursorDict
 
-PII_FIELDS = ("ssn", "password", "name", "email", "phone")
+
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(
     fields: List[str], redaction: str, message: str, separator: str
 ) -> str:
     """
-    Returns the log message obfuscated.
+    Obfuscates PII fields in a log message.
 
     Args:
         fields (List[str]): List of PII fields to obfuscate.
@@ -32,7 +31,7 @@ def filter_datum(
     """
     for field in fields:
         message = re.sub(
-            f"{field}=(.+?){separator}",
+            f"{field}=.+?{separator}",
             f"{field}={redaction}{separator}",
             message
         )
@@ -40,7 +39,9 @@ def filter_datum(
 
 
 class RedactingFormatter(logging.Formatter):
-    """Redacting Formatter class for obfuscating PII in logs."""
+    """
+    Redacting Formatter class for obfuscating PII in logs.
+    """
 
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
@@ -53,7 +54,7 @@ class RedactingFormatter(logging.Formatter):
         Args:
             fields (List[str]): List of PII fields to obfuscate.
         """
-        super().__init__(self.FORMAT)
+        super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
@@ -66,10 +67,10 @@ class RedactingFormatter(logging.Formatter):
         Returns:
             str: The formatted log record with obfuscated PII fields.
         """
-        original_message = super().format(record)
         return filter_datum(
-            self.fields, self.REDACTION, original_message, self.SEPARATOR
-        )
+            self.fields, self.REDACTION,
+            super().format(record), self.SEPARATOR
+        ).rstrip(self.SEPARATOR) + self.SEPARATOR
 
 
 def get_logger() -> logging.Logger:
@@ -96,18 +97,14 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     Establishes a connection to the database.
 
     Returns:
-        mysql.connector.connection.MySQLConnection: Database connection object.
+        Database connection object.
     """
-    username = getenv("PERSONAL_DATA_DB_USERNAME", "root")
-    password = getenv("PERSONAL_DATA_DB_PASSWORD", "")
-    host = getenv("PERSONAL_DATA_DB_HOST", "localhost")
-    database_name = getenv("PERSONAL_DATA_DB_NAME")
-
-    if not database_name:
-        raise ValueError("No database name provided")
-
-    connection = mysql.connector.connect(
-        host=host, user=username, password=password, database=database_name
+    connection = mysql.connector.connection.MySQLConnection(
+        user=environ.get("PERSONAL_DATA_DB_USERNAME", "root"),
+        password=environ.get("PERSONAL_DATA_DB_PASSWORD", ""),
+        host=environ.get("PERSONAL_DATA_DB_HOST", "localhost"),
+        database=environ.get("PERSONAL_DATA_DB_NAME"),
+        port=3306
     )
 
     return connection
@@ -115,26 +112,17 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 def main() -> None:
     """
-    Main function to retrieve all rows in the users table and display each
-    row under a filtered format.
+    Obtain a database connection using get_db and retrieve all rows
+    in the users table and display each row under a filtered format
     """
-    logger = get_logger()
     db_connection = get_db()
-
-    cursor = db_connection.cursor()
-    cursor.execute("DESCRIBE users;")
-    headers = [row[0] for row in cursor.fetchall()]
-    cursor.close()
-
-    cursor = db_connection.cursor()
+    cursor: MySQLCursorDict = db_connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users;")
+    logger = get_logger()
 
-    for row in cursor.fetchall():
-        message = (
-            "; ".join(f"{header}={value}" for header,
-                      value in zip(headers, row)) + ";"
-        )
-        logger.info(message)
+    for row in cursor:
+        log_message = "; ".join(f"{key}={value}" for key, value in row.items())
+        logger.info(log_message)
 
     cursor.close()
     db_connection.close()
