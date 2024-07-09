@@ -8,6 +8,7 @@ __pycache__/
 # Main files
 *-main.py
 main.py
+main_*.py
 
 # pytest files
 .pytest_cache/
