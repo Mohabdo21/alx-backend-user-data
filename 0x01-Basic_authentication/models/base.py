@@ -36,9 +36,7 @@ class Base:
 
     def __eq__(self, other: TypeVar("Base")) -> bool:
         """Equality"""
-        if type(self) != type(other):
-            return False
-        if not isinstance(self, Base):
+        if not isinstance(other, type(self)):
             return False
         return self.id == other.id
 
