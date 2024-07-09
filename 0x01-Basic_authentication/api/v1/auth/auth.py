@@ -3,6 +3,7 @@
 A module to apply authorization logic.
 """
 
+import fnmatch
 from typing import List, TypeVar
 
 from flask import request
@@ -25,8 +26,9 @@ class Auth:
         if not path.endswith("/"):
             path += "/"
 
-        if path in excluded_paths:
-            return False
+        for pattern in excluded_paths:
+            if fnmatch.fnmatch(path, pattern):
+                return False
 
         return True
 
