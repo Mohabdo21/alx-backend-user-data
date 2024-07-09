@@ -14,8 +14,21 @@ class Auth:
     """[TODO:description]"""
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """The Method is returning False for now"""
-        return False
+        """Returns False if path is in the list of excluded paths"""
+        if path is None:
+            return True
+
+        if excluded_paths is None or len(excluded_paths) == 0:
+            return True
+
+        # Add trailing slash for comparison
+        if not path.endswith("/"):
+            path += "/"
+
+        if path in excluded_paths:
+            return False
+
+        return True
 
     def authorization_header(self, request=None) -> str:
         """The Method is returning None for now"""
