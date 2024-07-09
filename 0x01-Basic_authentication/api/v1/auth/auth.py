@@ -31,8 +31,11 @@ class Auth:
         return True
 
     def authorization_header(self, request=None) -> str:
-        """The Method is returning None for now"""
-        return None
+        """Return the value of the header request Authorization"""
+        if request is None:
+            return None
+
+        return request.headers.get("Authorization", None)
 
     def current_user(self, request=None) -> User:
         """The Method is returning None for now"""
