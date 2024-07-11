@@ -32,6 +32,6 @@ class SessionDBAuth(SessionExpAuth):
             user_session = UserSession.search({"session_id": session_id})
             if user_session and user_session is not []:
                 user_session[0].remove()
-                super().destroy_session(request)
+                # super().destroy_session(request)
                 return True
         return False
