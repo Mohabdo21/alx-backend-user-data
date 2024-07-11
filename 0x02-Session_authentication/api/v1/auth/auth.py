@@ -4,6 +4,7 @@ A module to apply authorization logic.
 """
 
 import fnmatch
+import os
 from typing import List, TypeVar
 
 from flask import request
@@ -42,3 +43,10 @@ class Auth:
     def current_user(self, request=None) -> User:
         """The Method is returning None for now"""
         return None
+
+    def session_cookie(self, request=None):
+        if request is None:
+            return None
+
+        session_name = os.getenv('SESSION_NAME')
+        return request.cookies.get(session_name)
