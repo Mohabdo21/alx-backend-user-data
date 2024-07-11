@@ -3,6 +3,7 @@
 This module applies session authentication logic.
 """
 from uuid import uuid4
+from models.user import User
 from api.v1.auth.auth import Auth
 
 
@@ -32,3 +33,10 @@ class SessionAuth(Auth):
         if session_id is None or not isinstance(session_id, str):
             return None
         return self.user_id_by_session_id.get(session_id)
+
+    def current_user(self, request=None):
+        """Get a User based on his session ID."""
+        cookie_value = self.session_cookie(request)
+        user_id = self.user_id_for_session_id(cookie_value)
+        curr_user = User.get(user_id)
+        return curr_user
