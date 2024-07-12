@@ -3,6 +3,8 @@
 SessionDBAuth handles session authentication with a database.
 """
 
+from datetime import datetime, timedelta
+
 from api.v1.auth.session_exp_auth import SessionExpAuth
 from models.user_session import UserSession
 
@@ -20,8 +22,17 @@ class SessionDBAuth(SessionExpAuth):
     def user_id_for_session_id(self, session_id=None):
         """Retrieves the user ID associated with a session ID."""
         if session_id:
-            user_id = super().user_id_for_session_id(session_id)
-            return user_id
+            UserSession.load_from_file()
+            user_sessions = UserSession.search({"session_id": session_id})
+            if user_sessions:
+                user_session = user_sessions[0]
+                if (
+                    user_session.created_at + timedelta(
+                        seconds=self.session_duration
+                    )
+                    >= datetime.utcnow()
+                ):
+                    return user_session.user_id
         return None
 
     def destroy_session(self, request=None):
