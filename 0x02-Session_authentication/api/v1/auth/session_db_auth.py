@@ -29,9 +29,9 @@ class SessionDBAuth(SessionExpAuth):
         """Destroys a session based on the session ID from a request cookie."""
         if request:
             session_id = self.session_cookie(request)
+            super().destroy_session(request)
             user_session = UserSession.search({"session_id": session_id})
             if user_session and user_session is not []:
                 user_session[0].remove()
-                # super().destroy_session(request)
                 return True
         return False
