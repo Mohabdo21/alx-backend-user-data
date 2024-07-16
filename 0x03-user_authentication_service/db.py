@@ -61,7 +61,7 @@ class DB:
         invalid_keys = [
             key for key in kwargs.keys() if key not in column_names]
         if invalid_keys:
-            raise InvalidRequestError
+            raise ValueError
 
     def find_user_by(self, **kwargs) -> User:
         """
