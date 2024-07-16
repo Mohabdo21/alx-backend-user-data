@@ -130,9 +130,6 @@ class Auth:
         If the reset token is not valid or the password is not provided,
         a ValueError is raised.
         """
-        if not reset_token or not password:
-            return None
-
         try:
             user = self._db.find_user_by(reset_token=reset_token)
         except NoResultFound:

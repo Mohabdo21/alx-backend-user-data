@@ -120,7 +120,7 @@ def reset_password() -> Tuple[Response, int]:
 
 
 @app.route("/reset_password", methods=["PUT"])
-def update_password() -> Response:
+def update_password() -> Tuple[Response, int]:
     """
     The update_password route which handles password updates.
     It expects 'email', 'reset_token', and 'new_password' in the form data.
@@ -137,7 +137,7 @@ def update_password() -> Response:
     except ValueError:
         abort(403)
 
-    return jsonify({"email": email, "message": "Password updated"})
+    return jsonify({"email": email, "message": "Password updated"}), 200
 
 
 if __name__ == "__main__":
