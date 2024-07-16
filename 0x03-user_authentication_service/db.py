@@ -71,7 +71,10 @@ class DB:
         if not kwargs:
             raise InvalidRequestError
 
-        self._validate_attributes(kwargs)
+        try:
+            self._validate_attributes(kwargs)
+        except ValueError:
+            raise IndentationError
 
         user = self._session.query(User).filter_by(**kwargs).first()
         if not user:
