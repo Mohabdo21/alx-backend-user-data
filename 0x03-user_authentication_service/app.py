@@ -4,6 +4,7 @@
 from auth import Auth
 from flask import (Flask, Response, abort, jsonify,
                    make_response, redirect, request)
+from sqlalchemy.orm.exc import NoResultFound
 from typing import Tuple
 
 
@@ -134,7 +135,7 @@ def update_password() -> Tuple[Response, int]:
 
     try:
         AUTH.update_password(reset_token, new_pwd)
-    except Exception:
+    except (ValueError, NoResultFound):
         abort(403)
 
     return jsonify({"email": email, "message": "Password updated"}), 200
