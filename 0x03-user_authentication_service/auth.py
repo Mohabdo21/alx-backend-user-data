@@ -130,8 +130,8 @@ class Auth:
         If the reset token is not valid or the password is not provided,
         a ValueError is raised.
         """
-        # if not reset_token or not password:
-        #     return None
+        if not reset_token or not password:
+            return None
 
         try:
             user = self._db.find_user_by(reset_token=reset_token)
@@ -141,5 +141,7 @@ class Auth:
         hashed_pwd = _hash_password(password)
 
         self._db.update_user(
-            user.id, hashed_password=hashed_pwd.decode(), reset_token=None
+            user.id,
+            hashed_password=hashed_pwd.decode("utf-8"),
+            reset_token=None
         )
