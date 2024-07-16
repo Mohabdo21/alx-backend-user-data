@@ -7,14 +7,15 @@ __pycache__/
 
 # Main files
 *-main.py
-main.py
-main_*.py
+main*[^.py].py
 
 # pytest files
 .pytest_cache/
 
 # venv
 venv/
+.venv
 
 .DS_Store
 .DS_Store?
+*.db
