@@ -130,7 +130,7 @@ def update_password() -> Tuple[Response, int]:
     new_pwd = request.form["new_password"]
 
     if not email or not reset_token or not new_pwd:
-        abort(400)
+        abort(403)
 
     try:
         AUTH.update_password(reset_token, new_pwd)
