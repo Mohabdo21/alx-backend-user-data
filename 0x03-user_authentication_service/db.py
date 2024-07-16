@@ -68,8 +68,8 @@ class DB:
         Finds a User record by the given attributes. If no User is found, a
         NoResultFound exception is raised.
         """
-        if not kwargs:
-            raise InvalidRequestError
+        # if not kwargs:
+        #     raise InvalidRequestError
 
         try:
             self._validate_attributes(kwargs)
