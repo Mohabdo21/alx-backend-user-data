@@ -18,7 +18,9 @@ def _hash_password(password: str) -> bytes:
     if isinstance(password, str):
         password = password.encode()
 
-    return bcrypt.hashpw(password, bcrypt.gensalt())
+    salt = bcrypt.gensalt()
+
+    return bcrypt.hashpw(password, salt)
 
 
 def _generate_uuid() -> str:
