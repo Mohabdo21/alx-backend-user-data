@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Module contains flask application"""
 
-from typing import Tuple
-
+from auth import Auth
 from flask import (Flask, Response, abort, jsonify,
                    make_response, redirect, request)
+from typing import Tuple
 
-from auth import Auth
 
 AUTH = Auth()
 app = Flask(__name__)
