@@ -131,8 +131,8 @@ def update_password() -> Tuple[Response, int]:
     reset_token = request.form["reset_token"]
     new_pwd = request.form["new_password"]
 
-    if not email or not reset_token or not new_pwd:
-        abort(403)
+    # if not email or not reset_token or not new_pwd:
+    #     abort(403)
 
     try:
         uuid.UUID(reset_token)

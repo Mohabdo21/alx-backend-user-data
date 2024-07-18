@@ -47,7 +47,7 @@ class Auth:
             self._db.find_user_by(email=email)
         except NoResultFound:
             hashed_pwd = _hash_password(password)
-            return self._db.add_user(email, hashed_pwd.decode("utf-8"))
+            return self._db.add_user(email, hashed_pwd)
 
         raise ValueError(f"User {email} already exists")
 
@@ -63,8 +63,8 @@ class Auth:
             return False
 
         hashed_pwd = user.hashed_password
-        if isinstance(hashed_pwd, str):
-            hashed_pwd = hashed_pwd.encode()
+        # if isinstance(hashed_pwd, str):
+        #     hashed_pwd = hashed_pwd.encode()
 
         return bcrypt.checkpw(password.encode(), hashed_pwd)
 
@@ -139,6 +139,6 @@ class Auth:
 
         self._db.update_user(
             user.id,
-            hashed_password=hashed_pwd.decode("utf-8"),
+            hashed_password=hashed_pwd,
             reset_token=None
         )
