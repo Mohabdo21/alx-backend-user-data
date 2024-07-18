@@ -6,6 +6,7 @@ from flask import (Flask, Response, abort, jsonify,
                    make_response, redirect, request)
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Tuple
+import uuid
 
 
 AUTH = Auth()
@@ -134,6 +135,7 @@ def update_password() -> Tuple[Response, int]:
         abort(403)
 
     try:
+        uuid.UUID(reset_token)
         AUTH.update_password(reset_token, new_pwd)
     except (ValueError, NoResultFound):
         abort(403)
