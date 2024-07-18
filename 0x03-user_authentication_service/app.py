@@ -65,7 +65,7 @@ def login() -> Response:
 
 
 @app.route("/sessions", methods=["DELETE"])
-def logout() -> Tuple[Response, int]:
+def logout() -> Response:
     """
     The sessions route which handles user logout.
     It expects a 'session_id' cookie.
@@ -81,7 +81,7 @@ def logout() -> Tuple[Response, int]:
         abort(403)
 
     AUTH.destroy_session(user.id)
-    return redirect("/"), 302
+    return redirect("/")
 
 
 @app.route("/profile", methods=["GET"])

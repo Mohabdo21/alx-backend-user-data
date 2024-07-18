@@ -2,7 +2,7 @@
 """Module contains the logic for user authentication"""
 
 from typing import Union
-from uuid import uuid4
+import uuid
 
 import bcrypt
 from sqlalchemy.orm.exc import NoResultFound
@@ -22,7 +22,7 @@ def _generate_uuid() -> str:
     """
     Generates a new UUID and returns it as a string.
     """
-    return str(uuid4())
+    return str(uuid.uuid4())
 
 
 class Auth:
